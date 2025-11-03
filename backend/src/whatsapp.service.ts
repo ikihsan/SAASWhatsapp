@@ -4,6 +4,7 @@ import qrcode from 'qrcode';
 import { Server as IOServer } from 'socket.io';
 import  http from 'http';
 import path from 'path/win32';
+import os from 'os';
 
 @Injectable()
 export class WhatsappService implements OnModuleInit {
@@ -21,7 +22,7 @@ export class WhatsappService implements OnModuleInit {
     const httpServer = http.createServer();
     this.io = new IOServer(httpServer, { cors: { origin: '' } });
     httpServer.listen(3002, () => console.log('Socket.IO server at :3002'));
-     const dataPath = path.join('C:\\', 'whatsapp', '.wwebjs_auth');
+     const dataPath = path.join('../', 'whatsapp', '.wwebjs_auth');
     // Use LocalAuth so sessions are saved to './.wwebjs_auth'
     this.client = new Client({
       authStrategy: new LocalAuth({ dataPath, clientId: crypto.randomUUID() }),
