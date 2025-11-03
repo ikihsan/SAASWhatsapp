@@ -1,0 +1,76 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Next.js
+.next/
+out/
+.vscode/.history
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Env files
+.env
+.env.*
+.DS_Store
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# WhatsApp session (whatsapp-web.js)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Puppeteer / Chromium profile
+/*/Default/
+profile-data/
+
+# Frontend
+frontend/.next/
+frontend/node_modules/
+
+# Backend
+backend/node_modules/
+backend/dist/
+backend/.wwebjs_auth/
+
+# Misc
+coverage/
+coverage-final.json
+
+# OS Temp
+tmp/
+temp/
+
+# Ignore uploads and backups
+*.zip
+*.tar.gz
+backup/
+
+# IDE specific
+.vscode/
+.idea/
+
+# Ignore local Windows Express adapter files if created
+*.local
