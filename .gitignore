@@ -11,7 +11,7 @@ build/
 *.tsbuildinfo
 
 # Next.js
-.next/
+*/.next/
 out/
 .vscode/.history
 
@@ -49,6 +49,7 @@ profile-data/
 # Frontend
 frontend/.next/
 frontend/node_modules/
+frontend/.env
 
 # Backend
 backend/node_modules/
