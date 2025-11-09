@@ -12,7 +12,6 @@ export class WhatsappController {
     return { qr, ready: this.wa.isReady() };
   }
   
-    @UseGuards(ApiKeyGuard)
   @Post('send')
   async send(@Body() body: { to: string; message: string }) {
     const { to, message } = body;

@@ -2,14 +2,13 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, LocalAuth, Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode';
 import { Server as IOServer } from 'socket.io';
-import  http from 'http';
 import path from 'path/win32';
-import os from 'os';
+
 
 @Injectable()
 export class WhatsappService implements OnModuleInit {
   public client: Client;
-  private io: IOServer;
+  private io: IOServer | null = null;
   private qrDataUrl: string | null = null;
   private ready = false;
 
@@ -18,14 +17,10 @@ export class WhatsappService implements OnModuleInit {
   }
 
   initClient() {
-    // Create a HTTP server for Socket.IO (simple)
-    const httpServer = http.createServer();
-    this.io = new IOServer(httpServer, { cors: { origin: '' } });
-    httpServer.listen(3002, () => console.log('Socket.IO server at :3002'));
-     const dataPath = path.join('../', 'whatsapp', '.wwebjs_auth');
+    const dataPath = path.join('.wwebjs_auth');
     // Use LocalAuth so sessions are saved to './.wwebjs_auth'
     this.client = new Client({
-      authStrategy: new LocalAuth({ dataPath, clientId: crypto.randomUUID() }),
+      authStrategy: new LocalAuth({ dataPath, clientId :'default'}),
       puppeteer: {
         headless: true,
         args: [
@@ -45,19 +40,19 @@ export class WhatsappService implements OnModuleInit {
     this.client.on('qr', async (qr) => {
       // generate data URL for the frontend
       this.qrDataUrl = await qrcode.toDataURL(qr);
-      this.io.emit('qr', this.qrDataUrl);
+      this.io?.emit('qr', this.qrDataUrl);
       console.log('QR received');
     });
 
     this.client.on('ready', () => {
       this.ready = true;
-      this.io.emit('ready', true);
+      this.io?.emit('ready', true);
       console.log('WhatsApp client ready');
     });
 
     this.client.on('message', (msg: Message) => {
-      // Send message to frontend via Socket.IO
-      this.io.emit('message', {
+      // Send message to frontend via Socket.IO if attached
+      this.io?.emit('message', {
         from: msg.from,
         body: msg.body,
         timestamp: msg.timestamp,
@@ -69,7 +64,15 @@ export class WhatsappService implements OnModuleInit {
     });
   }
 
-   getQr() {
+  // Called from main.ts after the Nest HTTP server is created
+  setIo(io: IOServer) {
+    this.io = io;
+    // re-emit current state so clients connecting after startup get the latest info
+    if (this.qrDataUrl) this.io.emit('qr', this.qrDataUrl);
+    if (this.ready) this.io.emit('ready', true);
+  }
+
+  getQr() {
     return this.qrDataUrl;
   }
 
